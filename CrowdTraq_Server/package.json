@@ -1,0 +1,16 @@
+{
+  "name": "crowdtraq_server",
+  "version": "1.0.0",
+  "description": "Backend to CrowdTraq app",
+  "main": "server.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "Katie Rose",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mocha": "^8.2.1",
+    "spotify-web-api-node": "^5.0.2"
+  }
+}
