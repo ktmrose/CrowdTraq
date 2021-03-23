@@ -46,7 +46,7 @@ function getAuthCode() {
  */
 function handleAuthorizationResponse() {
     if (this.status === 200) {
-        var data = JSON.parse(this.responseText);
+        let data = JSON.parse(this.responseText);
 
         if (data.access_token !== undefined) {
             access_token = data.access_token;
@@ -57,6 +57,10 @@ function handleAuthorizationResponse() {
             sessionStorage.setItem("refresh_token", refresh_token);
         }
         onPageLoad();
+
+    } else if(this.status === 401) {
+        refreshAccessToken();
+
     } else {
         console.log(this.responseText);
         alert(this.responseText);
@@ -131,8 +135,13 @@ function handleRedirect() {
 function handleSongAddition() {
     if (this.status === 204) {
         console.log("Check your queue to see if your song was added.");
+
     } else if (this.status === 404) {
         console.log("Device not found");
+
+    } else if (this.status === 401) {
+        refreshAccessToken();
+
     } else {
         console.log(this.responseText);
     }
@@ -165,6 +174,8 @@ function pushSongToQ(trackID) {
 function verifyRequestHandled() {
     if (this.status === 204) {
         console.log("ReQuEsT fUlLfIlLeD");
+    } else if (this.status === 401) {
+        refreshAccessToken();
     } else {
         console.log(this.responseText);
     }
@@ -177,11 +188,15 @@ function handleCurrentlyPlayingResponse() {
     if (this.status === 200) {
         let data = JSON.parse(this.responseText);
         console.log(data);
-        if(data.is_playing) {
+        if (data.is_playing) {
             callSpotifyApi("PUT", PAUSE, null, verifyRequestHandled());
         } else {
             callSpotifyApi("PUT", PLAY, null, verifyRequestHandled());
         }
+
+    } else if (this.status === 401) {
+        refreshAccessToken();
+
     } else {
         console.log(this.responseText);
     }
