@@ -1,5 +1,5 @@
 body {
-    background-color: #1a285f;
+    background-color: #0f1635;
     margin: 0px;
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
@@ -17,5 +17,17 @@ body {
     display: block;
     margin-left: auto;
     margin-right: auto;
+    width: 35%;
+    padding: 8px;
+  }
+
+  .roomCodes {
+    margin-top: 8px;
+    margin: auto;
+    padding: 8px;
     width: 50%;
+    color: #45f4fd;
+    text-align: center;
+    border: thick outset #55fe50;
+    border-radius: 5px;
   }

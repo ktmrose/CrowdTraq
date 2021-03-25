@@ -5,7 +5,8 @@
         <title> CrowdTraQ </title>
         <!-- Import styles -->
         <link rel="stylesheet" href="./assets/styles.css"
-        <script src="https://unpkg.com/vue@next"></script>
+        <!-- Import Vue.js -->
+        <script src="https://unpkg.com/vue@3.0.0-beta.12/dist/vue.global.js"></script>
     </head>
     <body>
         <div id="app">
@@ -14,6 +15,24 @@
             <div class="logo">
                 <img src="./assets/CrowdTraQLogo.png">
             </div>
+            <div 
+                v-for="(roomCode, index) in roomCodes"
+                :key="roomCode.id"
+                v-on:click="joinRoom(index)"
+                class="roomCodes">Active Room Codes: <br>
+                {{ roomCode.name }}
+            </div>
+            <!-- add more components here -->
         </div>
+        <!-- Import app -->
+        <script src="main.js"></script>
+        
+        <!-- Import components -->
+        <script src="components/init.js"></script>
+
+        <!-- Mount App  -->
+        <script>
+            const mountedApp = app.mount('#app')
+        </script>
     </body>
 </html>
