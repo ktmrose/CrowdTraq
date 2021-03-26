@@ -16,6 +16,7 @@
                 <img src="./assets/CrowdTraQLogo.png">
             </div>
             <div 
+                id="room_code_display"
                 v-for="(roomCode, index) in roomCodes"
                 :key="roomCode.id"
                 v-on:click="joinRoom(index)"
@@ -23,13 +24,14 @@
                 {{ roomCode.name }}
             </div>
             <!-- add more components here -->
+            <dashboard @to-dashboard="goToDashBoard"></dashboard>
         </div>
         <!-- Import app -->
         <script src="main.js"></script>
         
         <!-- Import components -->
-        <script src="components/init.js"></script>
-
+        <script src="./components/createRoom.js"></script>
+        <script src="./components/dashBoard.js"></script>
         <!-- Mount App  -->
         <script>
             const mountedApp = app.mount('#app')

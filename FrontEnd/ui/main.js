@@ -17,6 +17,11 @@ const app = Vue.createApp({
         joinRoom(index) {
 
             console.log("you've joined the " + this.roomCodes[index].name + " room")
+            this.$emit("to-dashboard", this.roomCodes[index].id)
+            let roomCodeDisplay = document.getElementById("room_code_display")
+            if (roomCodeDisplay.style.display !== "none") {
+                roomCodeDisplay.style.display = "none"
+            }
         }
     }
 })
