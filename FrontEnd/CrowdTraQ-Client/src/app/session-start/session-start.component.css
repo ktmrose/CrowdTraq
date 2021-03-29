@@ -1,0 +1,34 @@
+button {
+    background-color: #E4FBF7;
+    color: #07BFA1;
+    border: none;
+    margin: 1%;
+    padding: 1%;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.25s;
+    position: relative;
+    box-shadow: 0 7px #08F7FE;
+    outline: none;
+}
+
+button:hover {
+    background-color: rgb(186, 247, 216);
+}
+
+button:active {
+    box-shadow: 0 2px #08F7FE;
+    transform: translateY(4px);
+    background-color: #FE53BB;
+    color: #08F7FE
+}
+
+input {
+    background-color: #E4FBF7;
+    color: #07BFA1;
+    border: none;
+    outline: none;
+    text-align: center;
+}
+

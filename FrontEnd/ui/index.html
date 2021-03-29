@@ -20,11 +20,12 @@
                 v-for="(roomCode, index) in roomCodes"
                 :key="roomCode.id"
                 v-on:click="joinRoom(index)"
-                class="roomCodes">Active Room Codes: <br>
+                class="roomCodes"
+                @to-dashboard="dashBoardInit">Active Room Codes: <br>
                 {{ roomCode.name }}
             </div>
             <!-- add more components here -->
-            <dashboard @to-dashboard="goToDashBoard"></dashboard>
+            <dashboard></dashboard>
         </div>
         <!-- Import app -->
         <script src="main.js"></script>

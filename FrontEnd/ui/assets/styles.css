@@ -3,6 +3,8 @@ body {
     margin: 0px;
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
     letter-spacing: 3px;
+    color: #45f4fd;
+    text-align: center;
 }
 
 .nav-bar {
@@ -27,8 +29,6 @@ body {
     margin: auto;
     padding: 8px;
     width: 50%;
-    color: #45f4fd;
-    text-align: center;
     border: thick outset #55fe50;
     border-radius: 5px;
     cursor: pointer;

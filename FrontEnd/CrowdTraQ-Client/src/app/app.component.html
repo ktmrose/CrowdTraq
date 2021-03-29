@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <link rel="stylesheet" href="app.component.css">
+  </head>
+
+  <body>
+    <h1>
+      <span style="color: #F5D300">{{titleCrowd}}</span>
+      <span style="color: #FE53BB">{{titleTra}}</span>
+      <span style="color: #08F7FE">{{titleQ}}</span>
+    </h1>
+    <app-session-start></app-session-start>
+  </body>
+
+  <router-outlet>
+    <app-admin></app-admin>
+  </router-outlet>
+
+</html>
