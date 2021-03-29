@@ -9,9 +9,6 @@ app.component('dashboard', {
     /*html*/
     `<div class="dashBoard">DashBoard</div>`,
     methods: {
-        dashBoardInit(index) {
-            console.log("dashboardInit accessed")
-            console.log(index)
-        }
+
     }
 })
