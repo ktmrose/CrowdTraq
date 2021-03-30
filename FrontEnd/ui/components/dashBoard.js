@@ -1,4 +1,10 @@
-app.component('dashboard', {
+app.component('dash-board', {
+    props: {
+        hasSubmitted: {
+            type: Boolean,
+            required: true
+        }
+    },
     data () {
         return {
             userId: 0,
@@ -7,7 +13,10 @@ app.component('dashboard', {
     },
     template: 
     /*html*/
-    `<div class="dashBoard">DashBoard</div>`,
+    `<div 
+        :class="[ hasSubmitted ? 'hiddenComponent' : '' ]">
+        <p> Tokens: {{this.tokens}}</p>
+    </div>`,
     methods: {
 
     }

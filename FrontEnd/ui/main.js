@@ -4,7 +4,8 @@ const app = Vue.createApp({
             roomCodes: [
                 { id: 0, name: 'Default', numUsers: 0} //add time of creation
             ],
-            selectedRoomId: 0
+            selectedRoomId: 0,
+            hasSubmitted: false
         }
     },
     methods: {
@@ -17,14 +18,18 @@ const app = Vue.createApp({
         },
         joinRoom(index) {
 
-            console.log("index: " + index)
-            console.log("you've joined the " + this.roomCodes[index].name + " room")
-            console.log("Room ID: " + this.roomCodes[index].id)
-            this.$emit("to-dashboard", this.roomCodes[index].id)
             let roomCodeDisplay = document.getElementById("room_code_display")
-            if (roomCodeDisplay.style.display !== "none") {
-                roomCodeDisplay.style.display = "none"
-            }
+            this.selectedRoomId = index
+            this.hasSubmitted = true
+            // if (roomCodeDisplay.style.display !== "none") {
+            //     roomCodeDisplay.style.display = "none"
+            // }
+
+        }
+    },
+    computed: {
+        getHasSubmitted() {
+            return hasSubmitted;
         }
     }
 })

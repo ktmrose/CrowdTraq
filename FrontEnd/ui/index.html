@@ -11,12 +11,13 @@
     <body>
         <div id="app">
             <div class="nav-bar"></div>
-
             <div class="logo">
                 <img src="./assets/CrowdTraQLogo.png">
             </div>
+            
             <div 
-                id="room_code_display">
+                id="room_code_display"
+                v-if="!hasSubmitted">
                 <label for="room">Room:</label>
                 <select id="rooms" class="form-control">
                     <option v-for="roomCode in roomCodes">
@@ -24,7 +25,6 @@
                     </option>
                 </select>
                 <br>
-    
                 <br>
                 <button
                     class="button"
@@ -34,7 +34,9 @@
             </div>
 
             <!-- add more components here -->
-            <dashboard></dashboard>
+            <div v-else>
+                    <dash-board :hasSubmitted="hasSubmitted"></dash-board>
+            </div>
         </div>
         <!-- Import app -->
         <script src="main.js"></script>

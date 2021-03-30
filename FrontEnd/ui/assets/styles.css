@@ -49,7 +49,11 @@ body {
     cursor: pointer;
   }
 
+  .hiddenComponent {
+    display: none
+  }
+
   .dashBoard {
-    border: thick outset #45f4fd;
+    border: thick outset #55fe50;
     border-radius: 5px;
   }
