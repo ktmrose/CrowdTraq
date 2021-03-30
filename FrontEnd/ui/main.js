@@ -21,6 +21,7 @@ const app = Vue.createApp({
             let roomCodeDisplay = document.getElementById("room_code_display")
             this.selectedRoomId = index
             this.hasSubmitted = true
+            this.roomCodes[index].numUsers += 1
             // if (roomCodeDisplay.style.display !== "none") {
             //     roomCodeDisplay.style.display = "none"
             // }

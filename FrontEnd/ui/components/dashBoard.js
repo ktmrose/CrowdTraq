@@ -1,10 +1,4 @@
 app.component('dash-board', {
-    props: {
-        hasSubmitted: {
-            type: Boolean,
-            required: true
-        }
-    },
     data () {
         return {
             userId: 0,
@@ -13,11 +7,26 @@ app.component('dash-board', {
     },
     template: 
     /*html*/
-    `<div 
-        :class="[ hasSubmitted ? 'hiddenComponent' : '' ]">
-        <p> Tokens: {{this.tokens}}</p>
-    </div>`,
+    `<p> Tokens: {{this.tokens}}</p>
+    <div
+        class="img-row">
+        <p>How do you like the currently playing song?</p>
+        <div class="img-col">
+            <img src="./assets/vaporwaveFlameClear.png" 
+                class="img">
+            <p>HOT!</p>
+        </div>
+        <div class="img-col">
+            <img src="./assets/vaporWaveNot.png"
+                class="img">
+            <p>NOT!</p>
+        </div>
+        
+    </div>
+    <button
+        class="button">Add song</button>`,
     methods: {
 
+        //handle button clicks
     }
 })

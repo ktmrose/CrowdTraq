@@ -36,24 +36,28 @@ body {
 
   .button {
     margin: 30px;
-    background-color: #39495c;
+    background-color: #f3f950;
     border-radius: 5px;
-    font-size: 18px;
-    width: 160px;
+    width: 90%;
     height: 60px;
-    color: white;
     box-shadow: inset 0 -0.6em 1em -0.35em rgba(0, 0, 0, 0.17),
-      inset 0 0.6em 2em -0.3em rgba(255, 255, 255, 0.15),
-      inset 0 0 0em 0.05em rgba(255, 255, 255, 0.12);
+      inset 0 0.6em 2em -0.3em #55fe50,
+      inset 0 0 0em 0.05em #55fe50;
     text-align: center;
     cursor: pointer;
   }
 
-  .hiddenComponent {
-    display: none
-  }
+.img-col {
+    display: inline-block;
+    margin-left: auto;
+    margin-right: auto;
+    padding-right: 10%;
+    padding-left: 10%;
+    width: 25%;
+}
 
-  .dashBoard {
-    border: thick outset #55fe50;
-    border-radius: 5px;
-  }
+.img {
+    width:75%; 
+    height: auto;
+    cursor: pointer;
+}
