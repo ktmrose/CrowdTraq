@@ -26,6 +26,8 @@ const SKIP = "https://api.spotify.com/v1/me/player/next";
 const PLAYBACKSTATE = "https://api.spotify.com/v1/me/player";
 const PAUSE = "https://api.spotify.com/v1/me/player/pause";
 
+var isPlaying;
+
 /**
  * Parses the url returned from Spotify and gets the authorization token.
  * @returns {null} the code, if present. Code would not be present if authorization has not been granted by user.
@@ -188,11 +190,19 @@ function handleCurrentlyPlayingResponse() {
     if (this.status === 200) {
         let data = JSON.parse(this.responseText);
         console.log(data);
-        if (data.is_playing) {
-            callSpotifyApi("PUT", PAUSE, null, verifyRequestHandled());
-        } else {
-            callSpotifyApi("PUT", PLAY, null, verifyRequestHandled());
+        if (data.item !== null) {
+            document.getElementById("albumImage").src = data.item.album.images[0].url
+            document.getElementById("trackTitle").innerHTML = data.item.name
+            document.getElementById("trackArtist").innerText = data.item.artists[0].name
         }
+
+        //logic for pause and play button
+        isPlaying = data.is_playing
+        // if (data.is_playing) {
+        //     callSpotifyApi("PUT", PAUSE, null, verifyRequestHandled());
+        // } else {
+        //     callSpotifyApi("PUT", PLAY, null, verifyRequestHandled());
+        // }
 
     } else if (this.status === 401) {
         refreshAccessToken();
@@ -208,6 +218,12 @@ function handleCurrentlyPlayingResponse() {
 function playPause() {
 
     callSpotifyApi("GET", PLAYBACKSTATE + "?market=US", null, handleCurrentlyPlayingResponse);
+
+    if (isPlaying) {
+        callSpotifyApi("PUT", PAUSE, null, verifyRequestHandled());
+    } else {
+        callSpotifyApi("PUT", PLAY, null, verifyRequestHandled());
+    }
 }
 
 /**

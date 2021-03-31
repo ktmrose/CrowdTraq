@@ -1,7 +1,7 @@
 {
   "name": "crowdtraq_server",
   "version": "1.0.0",
-  "description": "Playlist generator that allows users to add songs to a common playlist in addition to reacting to songs within the playlist",
+  "description": "Backend to CrowdTraq app",
   "main": "app.js",
   "scripts": {
     "test": "mocha"
@@ -9,10 +9,8 @@
   "author": "Katie Rose",
   "license": "ISC",
   "dependencies": {
-    "bootstrap": "^4.6.0",
-    "cookie-parser": "^1.4.5",
-    "cors": "^2.8.5",
     "express": "^4.17.1",
-    "mocha": "^8.2.1"
+    "mocha": "^8.2.1",
+    "spotify-web-api-node": "^5.0.2"
   }
 }
