@@ -176,6 +176,7 @@ function pushSongToQ(trackID) {
 function verifyRequestHandled() {
     if (this.status === 204) {
         console.log("ReQuEsT fUlLfIlLeD");
+        callSpotifyApi("GET", PLAYBACKSTATE + "?market=US", null, handleCurrentlyPlayingResponse)
     } else if (this.status === 401) {
         refreshAccessToken();
     } else {
@@ -198,11 +199,6 @@ function handleCurrentlyPlayingResponse() {
 
         //logic for pause and play button
         isPlaying = data.is_playing
-        // if (data.is_playing) {
-        //     callSpotifyApi("PUT", PAUSE, null, verifyRequestHandled());
-        // } else {
-        //     callSpotifyApi("PUT", PLAY, null, verifyRequestHandled());
-        // }
 
     } else if (this.status === 401) {
         refreshAccessToken();
@@ -231,7 +227,7 @@ function playPause() {
  */
 function skipSong() {
 
-    callSpotifyApi("POST", SKIP, null, verifyRequestHandled);
+    callSpotifyApi("POST", SKIP, null, verifyRequestHandled)
 }
 
 /**
@@ -249,6 +245,7 @@ function onPageLoad() {
             document.getElementById("tokenSection").style.display = 'block';
         } else {
             document.getElementById("songSelection").style.display = 'block';
+            callSpotifyApi("GET", PLAYBACKSTATE + "?market=US", null, handleCurrentlyPlayingResponse);
         }
     }
 }
