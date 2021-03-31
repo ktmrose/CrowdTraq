@@ -35,7 +35,7 @@ app.component('dash-board', {
     <div 
         class="addSongForm"
         v-else>
-        <add-song-form @song-submitted="unrequestSongForm"></add-song-form>
+        <add-song-form :tokens="tokens" @song-submitted="unrequestSongForm"></add-song-form>
     </div>`,
     methods: {
         //displays html for song request
