@@ -1,14 +1,20 @@
 app.component('add-song-form', {
+    props: {
+        tokens: {
+            type: Number,
+            required: true
+        }
+    },
     data () {
         return {
-            trackId: null
+            trackId: ""
         }
     },
     template:
     /*html*/
     `<p>Enter Spotify track Id:</p>
     <label for="track">Track Id:</label>
-    <input id="track-id" v-model="trackId">
+    <input id="trackId" v-model="trackId">
     <button 
         class="button"
         v-on:click="submitSongRequest">
@@ -16,6 +22,16 @@ app.component('add-song-form', {
     methods: {
         submitSongRequest() {
 
+            if (this.trackId === "") {
+                alert("Please enter Spotify track Id.")
+                return
+            }
+            console.log(this.trackId)
+            this.$emit('song-submitted')
         }
     }
 })
+
+function postXML(trackId) {
+
+}

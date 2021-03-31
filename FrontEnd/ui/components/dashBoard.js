@@ -3,7 +3,8 @@ app.component('dash-board', {
         return {
             userId: 0,
             tokens: 10,
-            requestingSong: false
+            requestingSong: false,
+            submittedFeedback: false
         }
     },
     template: 
@@ -34,12 +35,16 @@ app.component('dash-board', {
     <div 
         class="addSongForm"
         v-else>
-        <add-song-form></add-song-form>
+        <add-song-form @song-submitted="unrequestSongForm"></add-song-form>
     </div>`,
     methods: {
         //displays html for song request
         songRequest() {
             this.requestingSong = true
+        },
+
+        unrequestSongForm() {
+            this.requestingSong = false
         }
     }
 })
