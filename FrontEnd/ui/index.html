@@ -30,7 +30,7 @@
                     class="button"
                     v-on:click="joinRoom(selectedRoomId)"
                     >
-                    <span>Join the  {{ roomCodes[selectedRoomId].name }} room</span></button>
+                    <span>Join the {{ roomCodes[selectedRoomId].name }} room</span></button>
             </div>
 
             <!-- add more components here -->
@@ -44,6 +44,7 @@
         <!-- Import components -->
         <script src="./components/createRoom.js"></script>
         <script src="./components/dashBoard.js"></script>
+        <script src="./components/addSong.js"></script>
         <!-- Mount App  -->
         <script>
             const mountedApp = app.mount('#app')

@@ -3,6 +3,7 @@ app.component('dash-board', {
         return {
             userId: 0,
             tokens: 10,
+            requestingSong: false
         }
     },
     template: 
@@ -23,10 +24,22 @@ app.component('dash-board', {
         </div>
         
     </div>
-    <button
-        class="button">Add song</button>`,
+    <div
+        v-if="!requestingSong">
+        <button
+        class="button"
+        v-on:click="songRequest">Add song
+    </button>
+    </div>
+    <div 
+        class="addSongForm"
+        v-else>
+        <add-song-form></add-song-form>
+    </div>`,
     methods: {
-
-        //handle button clicks
+        //displays html for song request
+        songRequest() {
+            this.requestingSong = true
+        }
     }
 })
