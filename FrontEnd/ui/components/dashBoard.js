@@ -15,12 +15,14 @@ app.component('dash-board', {
         <p>How do you like the currently playing song?</p>
         <div class="img-col">
             <img src="./assets/vaporwaveFlameClear.png" 
-                class="img">
+                class="img"
+                v-on:click="hotBtnClick">
             <p>HOT!</p>
         </div>
         <div class="img-col">
             <img src="./assets/vaporWaveNot.png"
-                class="img">
+                class="img"
+                v-on:click="notBtnClick">
             <p>NOT!</p>
         </div>
         
@@ -45,6 +47,14 @@ app.component('dash-board', {
 
         unrequestSongForm() {
             this.requestingSong = false
+        },
+
+        hotBtnClick() {
+            console.log("Hot button clicked")
+        },
+
+        notBtnClick() {
+            console.log("Not button clicked")
         }
     }
 })
