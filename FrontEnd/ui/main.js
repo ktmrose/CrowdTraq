@@ -5,7 +5,8 @@ const app = Vue.createApp({
                 { id: 0, name: 'Default', numUsers: 0} //add time of creation
             ],
             selectedRoomId: 0,
-            hasSubmitted: false
+            hasSubmitted: false,
+            connection: null
         }
     },
     methods: {

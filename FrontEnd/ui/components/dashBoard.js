@@ -37,7 +37,7 @@ app.component('dash-board', {
     <div 
         class="addSongForm"
         v-else>
-        <add-song-form :tokens="tokens" @song-submitted="unrequestSongForm"></add-song-form>
+        <add-song-form :tokens="tokens" :userId="userId" @song-submitted="unrequestSongForm"></add-song-form>
     </div>`,
     methods: {
         //displays html for song request
@@ -45,8 +45,10 @@ app.component('dash-board', {
             this.requestingSong = true
         },
 
-        unrequestSongForm() {
+        unrequestSongForm(trackId) {
+            //sends user information to server and hides form
             this.requestingSong = false
+            sendSongRequest(this.userId, this.tokens, trackId)
         },
 
         hotBtnClick() {
@@ -58,3 +60,17 @@ app.component('dash-board', {
         }
     }
 })
+
+function sendSongRequest (userId, tokens, trackId) {
+
+    let url = "http://localhost:8081/"
+    let xhr = new XMLHttpRequest();
+    xhr.open("POST", url, true)
+    xhr.setRequestHeader("Content-Type", "application/json")
+    if (xhr.readyState === 4 && xhr.status === 200) {
+        console.log(this.responseText)
+    }
+    var data = JSON.stringify({"UserId" : userId, "Tokens" : tokens, "TrackId" : trackId})
+    xhr.send(data)
+}
+

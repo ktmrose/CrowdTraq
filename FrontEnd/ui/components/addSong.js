@@ -3,6 +3,10 @@ app.component('add-song-form', {
         tokens: {
             type: Number,
             required: true
+        },
+        userId: {
+            type: Number,
+            required: true
         }
 
     },
@@ -28,20 +32,8 @@ app.component('add-song-form', {
                 return
             }
             console.log(this.trackId)
-            this.$emit('song-submitted')
+            this.$emit('song-submitted', this.trackId)
         }
     }
 })
 
-function postXML(userId, tokens, trackId) {
-
-    let url = "http://localhost:8081/"
-    let xhr = new XMLHttpRequest();
-    xhr.open("POST", url, true)
-    xhr.setRequestHeader("Content-Type", "application/json")
-    if (xhr.readyState === 4 && xhr.status === 200) {
-        console.log(this.responseText)
-    }
-    var data = JSON.stringify({"UserId" : userId, "Tokens" : tokens, "TrackId" : trackId})
-    xhr.send(data)
-}

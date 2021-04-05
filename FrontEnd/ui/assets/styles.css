@@ -1,4 +1,7 @@
 body {
+    background-image:url('meshWave.gif'); 
+    background-repeat:repeat;
+    background-size: cover;
     background-color: #0f1635;
     margin: 0px;
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
