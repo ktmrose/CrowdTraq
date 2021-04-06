@@ -21,6 +21,22 @@ const app = Vue.createApp({
             this.selectedRoomId = index
             this.hasSubmitted = true
             this.roomCodes[index].numUsers += 1
+            this.clientHello('User has joined room')
+        },
+        clientHello(message) {
+            console.log(this.connection)
+            this.connection.send(message)
+        }
+    },
+    created: function () {
+        console.log("Starting connection to WebSocket Server")
+        this.connection = new WebSocket('ws://localhost:8081')
+        this.connection.onmessage = function(event) {
+            console.log(event)
+        }
+        this.connection.onopen = function(event) {
+            console.log(event)
+            console.log('Fontend connection to CrowdTraQ Server successful')
         }
     }
 })
