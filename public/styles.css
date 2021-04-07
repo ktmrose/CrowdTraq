@@ -1,5 +1,14 @@
 body{
-    background-color: #000038;
+    background-image:url('./assets/meshWave.gif');
+    background-repeat:repeat;
+    background-size: cover;
+    background-position: center;
+    background-color: #0f1635;
+    margin: 0px;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    letter-spacing: 3px;
+    color: #45f4fd;
+    text-align: center;
 }
 
 #tokenSection{
@@ -9,20 +18,23 @@ body{
 #songSelection{
     display: none;
 }
+.logo {
+    padding-top: 20px;
+}
 
 .container{
-    padding: 20px;
-    background-color: #78bc61ff;
+    padding: 10px;
+    /*background-color: #78bc61ff;*/
 }
 
 #albumImage{
-    width: 30%;
+    width: 40%;
     float: left;
     margin: 20px;
 }
 
 #trackTitle{
-    font-size:3em;
+    font-size:4em;
 }
 
 #trackArtist{
