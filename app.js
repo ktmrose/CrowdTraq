@@ -1,10 +1,21 @@
 const express = require("express");
 const app = express();
 const ws = require('ws');
+const crypto = require('crypto');
+
+let webSockets = {};
 
 const wsServer = new ws.Server({noServer: true});
 wsServer.on('connection', socket => {
-    socket.on('message', message => console.log(message));
+
+    //maps client ID per socket
+    const connectionId = crypto.randomBytes(8).toString('hex');
+    webSockets[connectionId] = socket;
+    // console.log(connectionId)
+    webSockets[connectionId].send("hello from server")
+    socket.on('message', message => {
+        console.log(message)
+    });
 })
 
 // add middleware
