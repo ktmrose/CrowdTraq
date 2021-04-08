@@ -38,5 +38,9 @@ const app = Vue.createApp({
             console.log(event)
             console.log('Fontend connection to CrowdTraQ Server successful')
         }
+
+        this.connection.onmessage = function(event) {
+            console.log(event);
+          }
     }
 })

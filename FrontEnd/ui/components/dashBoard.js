@@ -1,4 +1,10 @@
 app.component('dash-board', {
+    props: {
+        connection: {
+            type: WebSocket,
+            required: true
+        }
+    },
     data () {
         return {
             userId: 0,
@@ -48,29 +54,31 @@ app.component('dash-board', {
         unrequestSongForm(trackId) {
             //sends user information to server and hides form
             this.requestingSong = false
-            sendSongRequest(this.userId, this.tokens, trackId)
+            sendSongRequest(this.connection, this.userId, this.tokens, trackId)
         },
 
         hotBtnClick() {
             console.log("Hot button clicked")
+            sendReaction(this.connection, this.userId, true)
         },
 
         notBtnClick() {
             console.log("Not button clicked")
+            sendReaction(this.connection, this.userId, false)
         }
     }
 })
 
-function sendSongRequest (userId, tokens, trackId) {
+function sendSongRequest (connection, userId, tokens, trackId) {
 
-    // let url = "http://localhost:8081/"
-    // let xhr = new XMLHttpRequest();
-    // xhr.open("POST", url, true)
-    // xhr.setRequestHeader("Content-Type", "application/json")
-    // if (xhr.readyState === 4 && xhr.status === 200) {
-    //     console.log(this.responseText)
-    // }
-    // var data = JSON.stringify({"UserId" : userId, "Tokens" : tokens, "TrackId" : trackId})
-    // xhr.send(data)
+    let message = JSON.stringify({"userId" : userId, "tokens" : tokens, "trackID" : trackId})
+    connection.send(message)
+    console.log("Message sent: " + message)
+}
+
+function sendReaction (connection, userID, reaction) {
+    let message = JSON.stringify({"userID" : userID, "likesSong" : reaction})
+    connection.send(message)
+    console.log("Reaction sent: " + message)
 }
 
