@@ -78,6 +78,7 @@ function sendSongRequest (connection, userId, tokens, trackId) {
 
 function sendReaction (connection, userID, reaction) {
     let message = JSON.stringify({"userID" : userID, "likesSong" : reaction})
+    console.log(connection)
     connection.send(message)
     console.log("Reaction sent: " + message)
 }
