@@ -197,6 +197,15 @@ function handleCurrentlyPlayingResponse() {
             document.getElementById("albumImage").src = data.item.album.images[0].url
             document.getElementById("trackTitle").innerHTML = data.item.name
             document.getElementById("trackArtist").innerText = data.item.artists[0].name
+
+            songDuration = data.item.duration_ms
+            let now = new Date().getTime()
+            let songEnd = new Date().getTime() + songDuration
+            while (songEnd > now) {
+                now = new Date().getMilliseconds()
+                console.log("Song end (ms): " + songEnd)
+                console.log("Now: " + now)
+            }
         }
 
     } else if (this.status === 401) {
@@ -230,6 +239,55 @@ function playPause() {
 function skipSong() {
 
     callSpotifyApi("POST", SKIP, null, verifyRequestHandled)
+    // setSongTimer();
+}
+
+/**
+ * Sets the song duration and timer
+ */
+function setSongTimer() {
+    // callSpotifyApi("GET", CURRENTLYPLAYING + "?market=US", null,  () => {
+    //
+    //     if (this.status === 204) {
+    //         alert("No song currently playing, or private session");
+    //
+    //     } else if (this.status === 200) {
+    //         let data = JSON.parse(this.responseText);
+    //         console.log(data);
+    //         songDuration = data.item.duration_ms;
+            // countdownTimer()
+            let now = new Date().getMilliseconds()
+            let songEnd = new Date().getMilliseconds() + songDuration
+            while (songEnd > now) {
+                now = new Date().getMilliseconds()
+                console.log("Song end (ms): " + songEnd)
+                console.log("Now: " + now)
+            }
+    //         callSpotifyApi("GET", PLAYBACKSTATE + "?market=US", null, handleCurrentlyPlayingResponse);
+    //
+    //     } else if (this.status === 401) {
+    //         refreshAccessToken();
+    //
+    //     } else {
+    //         console.log(this.responseText);
+    //     }
+    // })
+}
+
+/**
+ * Checks song duration with updates for progress bar
+ */
+function countdownTimer() {
+
+    let songEnd = new Date().getMilliseconds() + songDuration
+
+    //checks song progression every second
+    setInterval(function () {
+
+        let now = new Date().getMilliseconds();
+        let remainingTime = songEnd - now;
+
+    }, 1000)
 }
 
 /**
@@ -248,6 +306,7 @@ function onPageLoad() {
         } else {
             document.getElementById("songSelection").style.display = 'block';
             callSpotifyApi("GET", PLAYBACKSTATE + "?market=US", null, handleCurrentlyPlayingResponse);
+            // setSongTimer();
         }
     }
 }
