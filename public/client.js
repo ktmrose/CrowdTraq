@@ -25,8 +25,10 @@ const QUEUE = "https://api.spotify.com/v1/me/player/queue";
 const SKIP = "https://api.spotify.com/v1/me/player/next";
 const PLAYBACKSTATE = "https://api.spotify.com/v1/me/player";
 const PAUSE = "https://api.spotify.com/v1/me/player/pause";
+const CURRENTLYPLAYING = "https://api.spotify.com/v1/me/player/currently-playing";
 
-var isPlaying;
+let isPlaying;
+let songDuration;
 
 /**
  * Parses the url returned from Spotify and gets the authorization token.
@@ -197,9 +199,6 @@ function handleCurrentlyPlayingResponse() {
             document.getElementById("trackArtist").innerText = data.item.artists[0].name
         }
 
-        //logic for pause and play button
-        isPlaying = data.is_playing
-
     } else if (this.status === 401) {
         refreshAccessToken();
 
@@ -214,12 +213,15 @@ function handleCurrentlyPlayingResponse() {
 function playPause() {
 
     callSpotifyApi("GET", PLAYBACKSTATE + "?market=US", null, handleCurrentlyPlayingResponse);
-
     if (isPlaying) {
         callSpotifyApi("PUT", PAUSE, null, verifyRequestHandled());
+        isPlaying = false;
     } else {
         callSpotifyApi("PUT", PLAY, null, verifyRequestHandled());
+        isPlaying = true;
     }
+
+
 }
 
 /**
