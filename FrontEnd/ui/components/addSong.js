@@ -1,15 +1,4 @@
 app.component('add-song-form', {
-    props: {
-        tokens: {
-            type: Number,
-            required: true
-        },
-        userId: {
-            type: Number,
-            required: true
-        }
-
-    },
     data () {
         return {
             trackId: ""

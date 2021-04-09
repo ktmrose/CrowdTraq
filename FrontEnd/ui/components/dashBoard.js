@@ -3,11 +3,14 @@ app.component('dash-board', {
         connection: {
             type: WebSocket,
             required: true
+        },
+        userId: {
+            type: String,
+            required: true
         }
     },
     data () {
         return {
-            userId: 0,
             tokens: 10,
             requestingSong: false,
             submittedFeedback: false
@@ -43,7 +46,7 @@ app.component('dash-board', {
     <div 
         class="addSongForm"
         v-else>
-        <add-song-form :tokens="tokens" :userId="userId" @song-submitted="unrequestSongForm"></add-song-form>
+        <add-song-form @song-submitted="unrequestSongForm"></add-song-form>
     </div>`,
     methods: {
         //displays html for song request

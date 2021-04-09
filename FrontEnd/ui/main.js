@@ -4,6 +4,7 @@ const app = Vue.createApp({
             roomCodes: [
                 { id: 0, name: 'Default', numUsers: 0} //add time of creation
             ],
+            userId: 0,
             selectedRoomId: 0,
             hasSubmitted: false,
             connection: null
@@ -21,10 +22,10 @@ const app = Vue.createApp({
             this.selectedRoomId = index
             this.hasSubmitted = true
             this.roomCodes[index].numUsers += 1
-            this.clientHello('User has joined room')
+            this.clientHello('A new user has joined room')
         },
         clientHello(message) {
-            console.log(this.connection)
+            // console.log(this.connection)
             this.connection.send(message)
         }
     },
@@ -40,7 +41,8 @@ const app = Vue.createApp({
         }
 
         this.connection.onmessage = function(event) {
-            console.log(event);
+            console.log("Your assigned userID: " + event.data);
+            this.userId = event.data
           }
     }
 })
