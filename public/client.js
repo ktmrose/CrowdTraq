@@ -29,6 +29,7 @@ const CURRENTLYPLAYING = "https://api.spotify.com/v1/me/player/currently-playing
 
 let isPlaying;
 let songDuration;
+let songProgression;
 
 /**
  * Parses the url returned from Spotify and gets the authorization token.
@@ -199,13 +200,9 @@ function handleCurrentlyPlayingResponse() {
             document.getElementById("trackArtist").innerText = data.item.artists[0].name
 
             songDuration = data.item.duration_ms
-            let now = new Date().getTime()
-            let songEnd = new Date().getTime() + songDuration
-            while (songEnd > now) {
-                now = new Date().getMilliseconds()
-                console.log("Song end (ms): " + songEnd)
-                console.log("Now: " + now)
-            }
+            console.log("Song duration: " + songDuration)
+            songProgression = data.progress_ms
+            checkSongDuration();
         }
 
     } else if (this.status === 401) {
@@ -239,55 +236,34 @@ function playPause() {
 function skipSong() {
 
     callSpotifyApi("POST", SKIP, null, verifyRequestHandled)
-    // setSongTimer();
 }
 
 /**
- * Sets the song duration and timer
+ * Sets the song duration and resets timer
  */
-function setSongTimer() {
-    // callSpotifyApi("GET", CURRENTLYPLAYING + "?market=US", null,  () => {
-    //
-    //     if (this.status === 204) {
-    //         alert("No song currently playing, or private session");
-    //
-    //     } else if (this.status === 200) {
-    //         let data = JSON.parse(this.responseText);
-    //         console.log(data);
-    //         songDuration = data.item.duration_ms;
-            // countdownTimer()
-            let now = new Date().getMilliseconds()
-            let songEnd = new Date().getMilliseconds() + songDuration
-            while (songEnd > now) {
-                now = new Date().getMilliseconds()
-                console.log("Song end (ms): " + songEnd)
-                console.log("Now: " + now)
-            }
-    //         callSpotifyApi("GET", PLAYBACKSTATE + "?market=US", null, handleCurrentlyPlayingResponse);
-    //
-    //     } else if (this.status === 401) {
-    //         refreshAccessToken();
-    //
-    //     } else {
-    //         console.log(this.responseText);
-    //     }
-    // })
-}
+function checkSongDuration() {
 
-/**
- * Checks song duration with updates for progress bar
- */
-function countdownTimer() {
-
-    let songEnd = new Date().getMilliseconds() + songDuration
-
-    //checks song progression every second
-    setInterval(function () {
-
-        let now = new Date().getMilliseconds();
+    let songEnd = new Date().getTime() + (songDuration - songProgression)
+    let countDownTimer = setInterval(function () {
+        let now = new Date().getTime();
         let remainingTime = songEnd - now;
 
-    }, 1000)
+        // Time calculations for days, hours, minutes and seconds
+        var days = Math.floor(remainingTime / (1000 * 60 * 60 * 24));
+        var hours = Math.floor((remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
+
+        // Display the result
+        console.log(days + "d " + hours + "h "
+            + minutes + "m " + seconds + "s ");
+
+        if (remainingTime < 0) {
+            clearInterval(countDownTimer);
+            console.log("Song ended")
+            callSpotifyApi("GET", PLAYBACKSTATE + "?market=US", null, handleCurrentlyPlayingResponse);
+        }
+    }, 1000);
 }
 
 /**
@@ -306,7 +282,6 @@ function onPageLoad() {
         } else {
             document.getElementById("songSelection").style.display = 'block';
             callSpotifyApi("GET", PLAYBACKSTATE + "?market=US", null, handleCurrentlyPlayingResponse);
-            // setSongTimer();
         }
     }
 }
