@@ -25,11 +25,11 @@ const QUEUE = "https://api.spotify.com/v1/me/player/queue";
 const SKIP = "https://api.spotify.com/v1/me/player/next";
 const PLAYBACKSTATE = "https://api.spotify.com/v1/me/player";
 const PAUSE = "https://api.spotify.com/v1/me/player/pause";
-const CURRENTLYPLAYING = "https://api.spotify.com/v1/me/player/currently-playing";
 
 let isPlaying;
 let songDuration;
 let songProgression;
+let songTimer = null;
 
 /**
  * Parses the url returned from Spotify and gets the authorization token.
@@ -179,7 +179,6 @@ function pushSongToQ(trackID) {
 function verifyRequestHandled() {
     if (this.status === 204) {
         console.log("ReQuEsT fUlLfIlLeD");
-        callSpotifyApi("GET", PLAYBACKSTATE + "?market=US", null, handleCurrentlyPlayingResponse)
     } else if (this.status === 401) {
         refreshAccessToken();
     } else {
@@ -200,7 +199,6 @@ function handleCurrentlyPlayingResponse() {
             document.getElementById("trackArtist").innerText = data.item.artists[0].name
 
             songDuration = data.item.duration_ms
-            console.log("Song duration: " + songDuration)
             songProgression = data.progress_ms
             checkSongDuration();
         }
@@ -226,8 +224,6 @@ function playPause() {
         callSpotifyApi("PUT", PLAY, null, verifyRequestHandled());
         isPlaying = true;
     }
-
-
 }
 
 /**
@@ -235,7 +231,9 @@ function playPause() {
  */
 function skipSong() {
 
+    clearInterval(songTimer);
     callSpotifyApi("POST", SKIP, null, verifyRequestHandled)
+    callSpotifyApi("GET", PLAYBACKSTATE + "?market=US", null, handleCurrentlyPlayingResponse)
 }
 
 /**
@@ -244,7 +242,7 @@ function skipSong() {
 function checkSongDuration() {
 
     let songEnd = new Date().getTime() + (songDuration - songProgression)
-    let countDownTimer = setInterval(function () {
+    songTimer = setInterval(function () {
         let now = new Date().getTime();
         let remainingTime = songEnd - now;
 
@@ -259,7 +257,7 @@ function checkSongDuration() {
             + minutes + "m " + seconds + "s ");
 
         if (remainingTime < 0) {
-            clearInterval(countDownTimer);
+            clearInterval(songTimer);
             console.log("Song ended")
             callSpotifyApi("GET", PLAYBACKSTATE + "?market=US", null, handleCurrentlyPlayingResponse);
         }
@@ -307,3 +305,5 @@ function requestAuthorization() {
 
     window.location.href = url;
 }
+
+module.exports = { skipSong, pushSongToQ }

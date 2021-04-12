@@ -23,10 +23,10 @@ wsServer.on('connection', socket => {
 
         //determine if message is song request or song reaction
         if (clientData.hasOwnProperty("tokens")) {
-            //check token number and add to Q
+            // user sends {"userId" : userId, "tokens" : tokens, "trackID" : trackId}
             console.log("inside tokens section...")
         } else if (clientData.hasOwnProperty("likesSong")) {
-            //functions to increase likes or dislikes of a song
+            // user sends {"userID" : userID, "likesSong" : reaction}
             console.log("inside song reaction section...")
         }
     });
