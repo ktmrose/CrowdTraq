@@ -22,7 +22,7 @@ const app = Vue.createApp({
             this.selectedRoomId = index
             this.hasSubmitted = true
             this.roomCodes[index].numUsers += 1
-            this.clientHello('A new user has joined room')
+            // this.clientHello('A new user has joined room')
         },
         clientHello(message) {
             // console.log(this.connection)
