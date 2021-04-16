@@ -2,6 +2,8 @@ const express = require("express");
 const app = express();
 const ws = require('ws');
 const crypto = require('crypto');
+let parser = require("./public/scripts/parser");
+
 
 let webSockets = {};
 
@@ -15,7 +17,6 @@ wsServer.on('connection', socket => {
     //send server generated client ID to client
     webSockets[connectionId].send(connectionId)
     socket.on('message', message => {
-        // console.log(message)
 
         //parse incoming message data
         const clientData = JSON.parse(message);

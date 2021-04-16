@@ -280,6 +280,7 @@ function onPageLoad() {
         } else {
             document.getElementById("songSelection").style.display = 'block';
             callSpotifyApi("GET", PLAYBACKSTATE + "?market=US", null, handleCurrentlyPlayingResponse);
+            // document.getElementById("qLength").innerText = window.queueLength;
         }
     }
 }
@@ -300,10 +301,8 @@ function requestAuthorization() {
     url += "&show_dialog=true";
 
     let scopeString = "";
-    scopes.forEach( scope => scopeString += (scope + " "));
+    scopes.forEach(scope => scopeString += (scope + " "));
     url += "&scope=" + scopeString;
 
     window.location.href = url;
 }
-
-module.exports = { skipSong, pushSongToQ }

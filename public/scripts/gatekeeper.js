@@ -1,26 +1,14 @@
-const spotifyClient = require('../public/client');
-
 let q = [];
 let users = [];
 let costModifier = 0;
 
-const User = {
-
-    userId: null,
-    socket: null,
-    tokens: 0,
-}
-
-let Song = {
-
-    trackId: null, //string
-    requestingUser: null, //User
-    numLikes: 0,
-    numDislikes: 0,
-}
-
 function getQLength() {
-    return q.length;
+
+    document.getElementById("qLength").innerText = q.length;
+}
+
+function getCost() {
+    document.getElementById("addSongCost").innerText = (q.length + costModifier);
 }
 
 function addUser(userID, websocket){
@@ -38,10 +26,12 @@ function addSongToQ(trackID, user) {
         let newSong =
         {
             trackId: trackID,
-            requestingUser: user
+            requestingUser: user,
+            numLikes: 0,
+            numDislikes: 0
         }
         q.push(newSong)
-        spotifyClient.pushSongToQ(newSong.trackId)
+        // pushSongToQ(newSong.trackId)
     } else {
 
         let cost = q.length + costModifier;
@@ -50,6 +40,3 @@ function addSongToQ(trackID, user) {
         }
     }
 }
-
-
-
