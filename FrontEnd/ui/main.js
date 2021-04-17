@@ -41,8 +41,10 @@ const app = Vue.createApp({
         }
 
         this.connection.onmessage = function(event) {
-            console.log("Your assigned userID: " + event.data);
+            
             this.userId = event.data
+            console.log("Your assigned userID: " + this.userId);
+            // console.log(typeof(this.userId))
           }
     }
 })

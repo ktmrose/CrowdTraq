@@ -3,17 +3,13 @@ app.component('dash-board', {
         connection: {
             type: WebSocket,
             required: true
-        },
-        userId: {
-            type: String,
-            required: true
         }
     },
     data () {
         return {
             tokens: 10,
             requestingSong: false,
-            submittedFeedback: false
+            submittedFeedback: false,
         }
     },
     template: 
@@ -57,31 +53,32 @@ app.component('dash-board', {
         unrequestSongForm(trackId) {
             //sends user information to server and hides form
             this.requestingSong = false
-            sendSongRequest(this.connection, this.userId, this.tokens, trackId)
+            sendSongRequest(this.connection, this.tokens, trackId)
         },
 
         hotBtnClick() {
             console.log("Hot button clicked")
-            sendReaction(this.connection, this.userId, true)
+            sendReaction(this.connection,  true)
         },
 
         notBtnClick() {
             console.log("Not button clicked")
-            sendReaction(this.connection, this.userId, false)
+            sendReaction(this.connection, false)
         }
     }
 })
 
-function sendSongRequest (connection, userId, tokens, trackId) {
+function sendSongRequest (connection, tokens, trackId) {
 
-    let message = JSON.stringify({"userId" : userId, "tokens" : tokens, "trackID" : trackId})
+    let message = JSON.stringify({"userId" : connection.userId, "tokens" : tokens, "trackID" : trackId})
+    // console.log("userId: " + userId);
     connection.send(message)
     console.log("Message sent: " + message)
 }
 
-function sendReaction (connection, userID, reaction) {
-    let message = JSON.stringify({"userID" : userID, "likesSong" : reaction})
-    console.log(connection)
+function sendReaction (connection, reaction) {
+    let message = JSON.stringify({"userID" : connection.userId, "likesSong" : reaction})
+    // console.log(connection)
     connection.send(message)
     console.log("Reaction sent: " + message)
 }

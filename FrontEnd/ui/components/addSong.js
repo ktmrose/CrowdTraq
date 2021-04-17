@@ -20,7 +20,6 @@ app.component('add-song-form', {
                 alert("Please enter Spotify track Id.")
                 return
             }
-            console.log(this.trackId)
             this.$emit('song-submitted', this.trackId)
         }
     }
