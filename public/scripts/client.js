@@ -155,13 +155,14 @@ function handleSongAddition() {
 /**
  * Driver method to add a song to a queue.
  */
-function addSongToQ(){
+function addSongToQueue(){
 
     let songId;
     songId = document.getElementById("track").value;
     if (songId !== undefined) {
         pushSongToQ(songId);
     }
+    document.getElementById("track").value = "";
 }
 
 /**
@@ -253,8 +254,7 @@ function checkSongDuration() {
         var seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
 
         // Display the result
-        console.log(days + "d " + hours + "h "
-            + minutes + "m " + seconds + "s ");
+        // console.log(days + "d " + hours + "h " + minutes + "m " + seconds + "s ");
 
         if (remainingTime < 0) {
             clearInterval(songTimer);
