@@ -25,7 +25,7 @@ app.component('dash-board', {
             <p>HOT!</p>
         </div>
         <div class="img-col">
-            <img src="./assets/vaporWaveNot.png"
+            <img src="./assets/VaporWaveNot.png"
                 class="img"
                 v-on:click="notBtnClick">
             <p>NOT!</p>
