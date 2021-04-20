@@ -39,11 +39,11 @@ class GateKeeper {
         for (let i = 0; i < this.users.length; i++) {
             if (this.users[i] === userId) {
                 return this.users[i]
-            } else {
-                console.log("Unidentified user: user not found in array")
-                this.addUser(userId)
             }
         }
+        console.log("Unidentified user: user not found in array")
+        this.addUser(userId)
+        return userId;
     }
 
     addUser(userID){
