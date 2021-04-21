@@ -3,11 +3,15 @@ app.component('dash-board', {
         connection: {
             type: WebSocket,
             required: true
+        },
+        tokens: {
+            type: Number,
+            required: true
         }
     },
     data () {
         return {
-            tokens: 10,
+            // tokens: 10,
             requestingSong: false,
             submittedFeedback: false,
         }
@@ -82,4 +86,6 @@ function sendReaction (connection, reaction) {
     connection.send(message)
     console.log("Reaction sent: " + message)
 }
+
+
 
