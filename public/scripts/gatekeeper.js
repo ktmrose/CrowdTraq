@@ -26,13 +26,11 @@ class GateKeeper {
     }
 
     getUser(userId) {
-        //a user has a websocket, userid, and tokens
         if (this.users === undefined ) {
             // array empty or does not exist
             console.log("user array undefined")
         }
         if (this.users.length === 0) {
-            console.log("Adding first user")
             this.addUser(userId)
             console.log("User array after addition: " + this.users)
         }
@@ -43,7 +41,6 @@ class GateKeeper {
         }
         console.log("Unidentified user: user not found in array")
         this.addUser(userId)
-        return userId;
     }
 
     addUser(userID){
@@ -51,26 +48,33 @@ class GateKeeper {
         this.users.push(userID);
     }
 
-    addSongToQ(trackID, user) {
+    /**
+     *
+     * @param Spotify trackID
+     * @param userId
+     * @param userTokens
+     * @returns Number of tokens remaining to user
+     */
+    addSongToQ(trackID, userId, userTokens) {
 
-        if (this.q.length < 1) { //free addition to q
+        let cost = this.q.length + this.costModifier;
+        if (userTokens === undefined) {
+            console.log("user.tokens is undefined")
+            return userTokens;
+        } else if (userTokens < cost) {
+            console.log("too few tokens to add to q")
+            return userTokens;
+        } else {
             let newSong =
                 {
                     trackId: trackID,
-                    requestingUser: user,
+                    requestingUser: userId,
                     numLikes: 0,
                     numDislikes: 0
                 }
             this.q.push(newSong)
-        } else {
-
-            let cost = this.q.length + this.costModifier;
-            if (user.tokens === undefined) {
-                console.log("user.tokens is undefined")
-            }
-            if (user.tokens >= cost) {
-                alert("cannot add song to queue")
-            }
+            console.log(this.q)
+            return userTokens-cost;
         }
     }
 }

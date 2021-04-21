@@ -14,7 +14,7 @@ wsServer.on('connection', socket => {
     webSockets[connectionId] = socket;
 
     //send server generated client ID to client
-    webSockets[connectionId].send(connectionId)
+    webSockets[connectionId].send(JSON.stringify({"UserId": connectionId}));
     socket.on('message', message => {
         if (message == null) return;
 
@@ -22,18 +22,19 @@ wsServer.on('connection', socket => {
         const clientData = JSON.parse(message);
 
         //get the user's information currently on server
-        console.log("User id: " + clientData.userID)
-        let users = gk.getUsers();
-        let currentUser = gk.getUser(clientData.userID);
-        console.log("Current users: " + users);
-        console.log("Current user: " + currentUser);
+        console.log("User id: " + clientData.userId)
+        const currentUser = gk.getUser(clientData.userId);
 
+        console.log("Current user: " + currentUser);
         console.log("Data: " + JSON.stringify(clientData))
 
         //determine if message is song request or song reaction
         if (clientData.hasOwnProperty("tokens")) {
             // user sends {"userId" : userId, "tokens" : tokens, "trackID" : trackId}
-            console.log("inside tokens section...")
+            const remainingTokens = gk.addSongToQ(clientData.trackID, currentUser, clientData.tokens)
+            console.log("Remaining tokens: " + remainingTokens);
+            socket.send(JSON.stringify({"Tokens": remainingTokens}));
+
         } else if (clientData.hasOwnProperty("likesSong")) {
             // user sends {"userID" : userID, "likesSong" : reaction}
             console.log("inside song reaction section...")
