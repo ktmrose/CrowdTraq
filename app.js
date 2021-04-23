@@ -3,8 +3,10 @@ const app = express();
 const ws = require('ws');
 const crypto = require('crypto');
 const gk = require("./public/scripts/gatekeeper");
+const spotify = require("./public/scripts/client");
 
 const webSockets = {};
+let displayClientSocket = "";
 
 const wsServer = new ws.Server({noServer: true});
 wsServer.on('connection', socket => {
@@ -19,14 +21,38 @@ wsServer.on('connection', socket => {
         if (message == null) return;
 
         //parse incoming message data
-        const clientData = JSON.parse(message);
+        let clientData;
+        try {
+            clientData = JSON.parse(message);
+        } catch (e) {
+            console.log(e);
+        }
 
         //get the user's information currently on server
         console.log("User id: " + clientData.userId)
         const currentUser = gk.getUser(clientData.userId);
 
-        console.log("Current user: " + currentUser);
-        console.log("Data: " + JSON.stringify(clientData))
+        //if client is display dashboard, property "displaySuccess indicates state of display
+        if (clientData.hasOwnProperty("displaySuccess")){
+            const successCode = clientData.displaySuccess;
+            switch (successCode) {
+                case 0:
+                    // const url = spotify.requestAuthorization();
+                    // socket.send(JSON.stringify({"authUrl": url}))
+                    // break;
+                case 1: //Spotify auth success;
+                    console.log("authorization success")
+            }
+            // const url = spotify.requestAuthorization();
+        }
+        if (clientData.hasOwnProperty("Access_Token") && clientData.hasOwnProperty("Refresh_Token")) {
+
+            console.log(clientData)
+            displayClientSocket = clientData.UserId
+            const accessToken = clientData.Access_Token
+            const refreshToken = clientData.Refresh_Token
+            spotify.setTokens(accessToken, refreshToken, clientData.Client_ID)
+        }
 
         //determine if message is song request or song reaction
         if (clientData.hasOwnProperty("tokens")) {
@@ -44,6 +70,7 @@ wsServer.on('connection', socket => {
 
 // start express server on port 8081
 const server = app.listen(8081, () => {
+    console.log("initializing Spotify client");
     console.log("server started on port 8081");
 });
 
