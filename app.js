@@ -8,6 +8,10 @@ const spotify = require("./public/scripts/client");
 const webSockets = {};
 let displayClientSocket = "";
 
+function updateDisplay(albumCover, trackName, artistName, qLength, qCost) {
+    webSockets[displayClientSocket].send(JSON.stringify({"Q_length": qLength, "Cost": qCost, "Album_Cover": albumCover, "Track_Name": trackName, "Artist_Name": artistName}))
+}
+
 const wsServer = new ws.Server({noServer: true});
 wsServer.on('connection', socket => {
 
@@ -32,19 +36,7 @@ wsServer.on('connection', socket => {
         console.log("User id: " + clientData.userId)
         const currentUser = gk.getUser(clientData.userId);
 
-        //if client is display dashboard, property "displaySuccess indicates state of display
-        if (clientData.hasOwnProperty("displaySuccess")){
-            const successCode = clientData.displaySuccess;
-            switch (successCode) {
-                case 0:
-                    // const url = spotify.requestAuthorization();
-                    // socket.send(JSON.stringify({"authUrl": url}))
-                    // break;
-                case 1: //Spotify auth success;
-                    console.log("authorization success")
-            }
-            // const url = spotify.requestAuthorization();
-        }
+        //this comes from display
         if (clientData.hasOwnProperty("Access_Token") && clientData.hasOwnProperty("Refresh_Token")) {
 
             console.log(clientData)
@@ -52,6 +44,7 @@ wsServer.on('connection', socket => {
             const accessToken = clientData.Access_Token
             const refreshToken = clientData.Refresh_Token
             spotify.setTokens(accessToken, refreshToken, clientData.Client_ID)
+            socket.send(JSON.stringify({"Q_length": gk.getQLength(), "Cost" : gk.getCost()}))
         }
 
         //determine if message is song request or song reaction
@@ -70,7 +63,6 @@ wsServer.on('connection', socket => {
 
 // start express server on port 8081
 const server = app.listen(8081, () => {
-    console.log("initializing Spotify client");
     console.log("server started on port 8081");
 });
 

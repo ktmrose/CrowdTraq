@@ -2,28 +2,12 @@ const clientCreds = require("../../SpotifyAPIClientCredentials.json")
 
 class SpotifyClient {
     constructor() {
-        this.redirectUri = 'http://localhost:8081/';
         this.access_token = null;
         this.refresh_token = null;
         this.clientId = clientCreds.ClientID;
         this.clientSec = clientCreds.ClientSec;
 
-        this.scopes = [
-            'user-read-playback-state',
-            'user-modify-playback-state',
-            'user-read-currently-playing',
-            'playlist-modify-public',
-            'user-library-read',
-            'user-top-read',
-            'user-read-playback-position',
-            'user-read-recently-played',
-            'streaming',
-            'user-read-email',
-            'user-read-private'
-        ];
-
         // Spotify API endpoints used in this app
-        this.AUTHORIZE = "https://accounts.spotify.com/authorize";
         this.TOKEN = "https://accounts.spotify.com/api/token";
         this.PLAY = "https://api.spotify.com/v1/me/player/play";
         this.QUEUE = "https://api.spotify.com/v1/me/player/queue";
@@ -42,23 +26,7 @@ class SpotifyClient {
         this.access_token = accessToken;
         this.refresh_token = refreshToken;
         this.clientId = clientId
-        // console.log("tokens: " + this.access_token + " " + this.refresh_token)
     }
-
-    /**
-     * Parses the url returned from Spotify and gets the authorization token.
-     * @param queryString window.location.search
-     * @returns {null} the code, if present. Code would not be present if authorization has not been granted by user.
-     */
-    // getAuthCode(queryString) {
-    //     let code = null;
-    //
-    //     if (queryString.length > 0) {
-    //         const urlParams = new URLSearchParams(queryString);
-    //         code = urlParams.get('code');
-    //     }
-    //     return code;
-    // }
 
     /**
      * Callback from requesting access and refresh tokens from Spotify.
@@ -120,28 +88,6 @@ class SpotifyClient {
         xhr.send(body);
         xhr.onload = callback;
     }
-
-    /**
-     * Gets access token from Spotify using authorization code.
-     * @param code Authorization code
-     */
-    // fetchAccessToken(code) {
-    //     let body = "grant_type=authorization_code";
-    //     body += "&code=" + code;
-    //     body += "&redirect_uri=" + encodeURI(this.redirectUri);
-    //     body += "&client_id=" + this.clientId;
-    //     body += "&client_secret=" + this.clientSec;
-    //     this.callAuthorizationApi(body);
-    // }
-
-    /**
-     * Callback from Spotify authorization page; saves information from url sent back from Spotify and clears it
-     */
-    // handleRedirect(queryString) {
-    //     let code = this.getAuthCode(queryString);
-    //     this.fetchAccessToken(code);
-    //     // window.history.pushState("", "", this.redirectUri);
-    // }
 
     /**
      * Callback verifying song addition.

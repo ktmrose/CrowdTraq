@@ -1,3 +1,5 @@
+const spotify = require("./client")
+
 class GateKeeper {
     constructor() {
         this.q = []
@@ -19,10 +21,6 @@ class GateKeeper {
             return 0;
         }
         return (this.q.length + this.costModifier);
-    }
-
-    getUsers() {
-        return this.users;
     }
 
     getUser(userId) {
