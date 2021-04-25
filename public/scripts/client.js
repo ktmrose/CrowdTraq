@@ -1,6 +1,7 @@
 const clientCreds = require("../../SpotifyAPIClientCredentials.json")
 const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 const btoa = require('btoa');
+const notifier = require("./notifier")
 
 class SpotifyClient {
     constructor() {
@@ -25,12 +26,15 @@ class SpotifyClient {
         this.albumCover = "";
         this.songTitle = "";
         this.artistName = "";
+
+        if (this.isPlaying) {
+            this.callSpotifyApi("GET", this.PLAYBACKSTATE + "?market=US", null, this.handleCurrentlyPlayingResponse);
+        }
     }
 
-    setTokens(accessToken, refreshToken, clientId) {
+    setTokens(accessToken, refreshToken) {
         this.access_token = accessToken;
         this.refresh_token = refreshToken;
-        this.clientId = clientId
     }
 
     /**
@@ -39,6 +43,7 @@ class SpotifyClient {
     handleAuthorizationResponse() {
         if (this.status === 200) {
             let data = JSON.parse(this.responseText);
+            console.log(data)
 
             if (data.access_token !== undefined) {
                 this.access_token = data.access_token;
@@ -86,30 +91,12 @@ class SpotifyClient {
     }
 
     /**
-     * Callback verifying song addition.
-     */
-    handleSongAddition() {
-        if (this.status === 204) {
-            console.log("Check your queue to see if your song was added.");
-
-        } else if (this.status === 404) {
-            console.log("Device not found");
-
-        } else if (this.status === 401) {
-            refreshAccessToken();
-
-        } else {
-            console.log(this.responseText);
-        }
-    }
-
-    /**
      * Adds a song with a valid Spotify track ID to the queue.
      * @param trackID unique Spotify track ID
      */
    pushSongToQ(trackID) {
         if (trackID !== undefined) {
-            this.callSpotifyApi("POST", this.QUEUE + "?uri=spotify%3Atrack%3A" + trackID, null, this.handleSongAddition);
+            this.callSpotifyApi("POST", this.QUEUE + "?uri=spotify%3Atrack%3A" + trackID, null, handleSongAddition);
         }
     }
 
@@ -138,6 +125,7 @@ class SpotifyClient {
                 this.albumCover = data.item.album.images[0].url
                 this.songTitle = data.item.name
                 this.artistName = data.item.artists[0].name
+                notifier.emit("song-update", this.albumCover, this.songTitle, this.artistName)
 
                 this.songDuration = data.item.duration_ms
                 this.songProgression = data.progress_ms
@@ -202,6 +190,10 @@ class SpotifyClient {
     }
 }
 
+notifier.on("get-current-playback", () => {
+    instance.callSpotifyApi("GET", instance.PLAYBACKSTATE + "?market=US", null, instance.handleCurrentlyPlayingResponse);
+})
+
 const instance = new SpotifyClient();
 
 /**
@@ -212,6 +204,25 @@ function refreshAccessToken() {
     body += "&refresh_token=" + instance.refresh_token;
     body += "&client_id=" + instance.clientId;
     instance.callAuthorizationApi(body);
+}
+
+
+/**
+ * Callback verifying song addition.
+ */
+function handleSongAddition() {
+    if (this.status === 204) {
+        console.log("Check your queue to see if your song was added.");
+
+    } else if (this.status === 404) {
+        console.log("Device not found");
+
+    } else if (this.status === 401) {
+        refreshAccessToken();
+
+    } else {
+        console.log(this.responseText);
+    }
 }
 
 module.exports = instance;

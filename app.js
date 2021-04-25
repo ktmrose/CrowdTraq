@@ -4,6 +4,7 @@ const ws = require('ws');
 const crypto = require('crypto');
 const gk = require("./public/scripts/gatekeeper");
 const spotify = require("./public/scripts/client");
+const notifier = require("./public/scripts/notifier")
 
 const webSockets = {};
 let displayClientSocket = "";
@@ -20,6 +21,7 @@ function updateDisplay(albumCover, trackName, artistName, qLength, qCost) {
     }
 }
 
+//Responding to client events
 const wsServer = new ws.Server({noServer: true});
 wsServer.on('connection', socket => {
 
@@ -41,8 +43,8 @@ wsServer.on('connection', socket => {
         }
 
         //get the user's information currently on server
-        console.log("User id: " + clientData.userId)
-        const currentUser = gk.getUser(clientData.userId);
+        console.log("User id: " + clientData.UserId)
+        const currentUser = gk.getUser(clientData.UserId);
 
         //this comes from display
         if (clientData.hasOwnProperty("Access_Token") && clientData.hasOwnProperty("Refresh_Token")) {
@@ -51,7 +53,8 @@ wsServer.on('connection', socket => {
             displayClientSocket = clientData.UserId
             const accessToken = clientData.Access_Token
             const refreshToken = clientData.Refresh_Token
-            spotify.setTokens(accessToken, refreshToken, clientData.Client_ID)
+            spotify.setTokens(accessToken, refreshToken)
+            notifier.emit("get-current-playback")
             //albumCover, trackName, artistName, qLength, qCost
             updateDisplay(spotify.albumCover, spotify.songTitle, spotify.artistName, gk.getQLength(), gk.getCost())
         }
@@ -61,6 +64,7 @@ wsServer.on('connection', socket => {
             // user sends {"userId" : userId, "tokens" : tokens, "trackID" : trackId}
             const remainingTokens = gk.addSongToQ(clientData.trackID, currentUser, clientData.tokens)
             console.log("Remaining tokens: " + remainingTokens);
+            updateDisplay(spotify.albumCover, spotify.songTitle, spotify.artistName, gk.getQLength(), gk.getCost())
             socket.send(JSON.stringify({"Tokens": remainingTokens}));
 
         } else if (clientData.hasOwnProperty("likesSong")) {
@@ -68,6 +72,11 @@ wsServer.on('connection', socket => {
             console.log("inside song reaction section...")
         }
     });
+})
+
+//Responding to server events
+notifier.on("song-update", (albumCover, songTitle, artistName) => {
+    updateDisplay(albumCover, songTitle, artistName, gk.getQLength(), gk.getCost())
 })
 
 // start express server on port 8081

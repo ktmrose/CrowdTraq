@@ -1,4 +1,5 @@
 const spotify = require("./client")
+const notifier = require('./notifier')
 
 class GateKeeper {
     constructor() {
