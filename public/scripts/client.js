@@ -1,4 +1,6 @@
 const clientCreds = require("../../SpotifyAPIClientCredentials.json")
+const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+const btoa = require('btoa');
 
 class SpotifyClient {
     constructor() {
@@ -20,6 +22,9 @@ class SpotifyClient {
         this.songDuration = 0;
         this.songProgression = 0;
         this.songTimer = null;
+        this.albumCover = "";
+        this.songTitle = "";
+        this.artistName = "";
     }
 
     setTokens(accessToken, refreshToken, clientId) {
@@ -43,7 +48,7 @@ class SpotifyClient {
             }
 
         } else if (this.status === 401) {
-            this.refreshAccessToken();
+            refreshAccessToken();
 
         } else {
             console.log(this.responseText);
@@ -63,15 +68,6 @@ class SpotifyClient {
         xhr.onload = this.handleAuthorizationResponse;
     }
 
-    /**
-     * Refreshes access token
-     */
-    refreshAccessToken() {
-        let body = "grant_type=refresh_token";
-        body += "&refresh_token=" + this.refresh_token;
-        body += "&client_id=" + this.clientId;
-        this.callAuthorizationApi(body);
-    }
 
     /**
      * Generic method to handle Spotify API requests
@@ -100,7 +96,7 @@ class SpotifyClient {
             console.log("Device not found");
 
         } else if (this.status === 401) {
-            this.refreshAccessToken();
+            refreshAccessToken();
 
         } else {
             console.log(this.responseText);
@@ -124,7 +120,7 @@ class SpotifyClient {
         if (this.status === 204) {
             console.log("ReQuEsT fUlLfIlLeD");
         } else if (this.status === 401) {
-            this.refreshAccessToken();
+            refreshAccessToken();
         } else {
             console.log(this.responseText);
         }
@@ -139,9 +135,9 @@ class SpotifyClient {
             console.log(data);
             if (data.item !== null) {
                 //send this info to display
-                // document.getElementById("albumImage").src = data.item.album.images[0].url
-                // document.getElementById("trackTitle").innerHTML = data.item.name
-                // document.getElementById("trackArtist").innerText = data.item.artists[0].name
+                this.albumCover = data.item.album.images[0].url
+                this.songTitle = data.item.name
+                this.artistName = data.item.artists[0].name
 
                 this.songDuration = data.item.duration_ms
                 this.songProgression = data.progress_ms
@@ -149,7 +145,7 @@ class SpotifyClient {
             }
 
         } else if (this.status === 401) {
-            this.refreshAccessToken();
+            refreshAccessToken();
 
         } else {
             console.log(this.responseText);
@@ -207,4 +203,15 @@ class SpotifyClient {
 }
 
 const instance = new SpotifyClient();
+
+/**
+ * Refreshes access token
+ */
+function refreshAccessToken() {
+    let body = "grant_type=refresh_token";
+    body += "&refresh_token=" + instance.refresh_token;
+    body += "&client_id=" + instance.clientId;
+    instance.callAuthorizationApi(body);
+}
+
 module.exports = instance;

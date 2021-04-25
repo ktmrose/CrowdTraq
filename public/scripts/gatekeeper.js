@@ -71,6 +71,7 @@ class GateKeeper {
                     numDislikes: 0
                 }
             this.q.push(newSong)
+            spotify.pushSongToQ(trackID)
             console.log(this.q)
             return userTokens-cost;
         }

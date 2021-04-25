@@ -9,7 +9,15 @@ const webSockets = {};
 let displayClientSocket = "";
 
 function updateDisplay(albumCover, trackName, artistName, qLength, qCost) {
-    webSockets[displayClientSocket].send(JSON.stringify({"Q_length": qLength, "Cost": qCost, "Album_Cover": albumCover, "Track_Name": trackName, "Artist_Name": artistName}))
+    if (displayClientSocket !== undefined) {
+        webSockets[displayClientSocket].send(JSON.stringify({
+            "Q_length": qLength,
+            "Cost": qCost,
+            "Album_Cover": albumCover,
+            "Track_Name": trackName,
+            "Artist_Name": artistName
+        }))
+    }
 }
 
 const wsServer = new ws.Server({noServer: true});
@@ -44,7 +52,8 @@ wsServer.on('connection', socket => {
             const accessToken = clientData.Access_Token
             const refreshToken = clientData.Refresh_Token
             spotify.setTokens(accessToken, refreshToken, clientData.Client_ID)
-            socket.send(JSON.stringify({"Q_length": gk.getQLength(), "Cost" : gk.getCost()}))
+            //albumCover, trackName, artistName, qLength, qCost
+            updateDisplay(spotify.albumCover, spotify.songTitle, spotify.artistName, gk.getQLength(), gk.getCost())
         }
 
         //determine if message is song request or song reaction
