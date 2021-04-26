@@ -97,6 +97,7 @@ class GateKeeper {
         } else {
             this.currentSongDislikes ++
         }
+        console.log("NumLikes: " + this.currentSongLikes + " NumDislikes: " + this.currentSongDislikes)
     }
 }
 const instance = new GateKeeper();

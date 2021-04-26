@@ -1,17 +1,16 @@
 const express = require("express");
 const app = express();
 const ws = require('ws');
-const crypto = require('crypto');
 const gk = require("./public/scripts/gatekeeper");
 const spotify = require("./public/scripts/client");
 const notifier = require("./public/scripts/notifier")
 
-const webSockets = {};
-let displayClientSocket = "";
+const webSockets = [];
+let displaySocketIndex; //undefined until identified by client message
 
 function updateDisplay(albumCover, trackName, artistName, qLength, qCost) {
-    if (displayClientSocket !== undefined) {
-        webSockets[displayClientSocket].send(JSON.stringify({
+    if (displaySocketIndex !== undefined) {
+        webSockets[displaySocketIndex].send(JSON.stringify({
             "Q_length": qLength,
             "Cost": qCost,
             "Album_Cover": albumCover,
@@ -26,7 +25,7 @@ const wsServer = new ws.Server({noServer: true});
 wsServer.on('connection', socket => {
 
     //maps client ID per socket
-    const connectionId = crypto.randomBytes(8).toString('hex');
+    const connectionId = webSockets.length
     webSockets[connectionId] = socket;
 
     //send server generated client ID to client
@@ -49,7 +48,7 @@ wsServer.on('connection', socket => {
         //this comes from display
         if (clientData.hasOwnProperty("Access_Token") && clientData.hasOwnProperty("Refresh_Token")) {
 
-            displayClientSocket = clientData.UserId
+            displaySocketIndex = clientData.UserId
             const accessToken = clientData.Access_Token
             const refreshToken = clientData.Refresh_Token
             spotify.setTokens(accessToken, refreshToken)
@@ -65,8 +64,7 @@ wsServer.on('connection', socket => {
             socket.send(JSON.stringify({"Tokens": remainingTokens}));
 
         } else if (clientData.hasOwnProperty("likesSong")) {
-            // user sends {"userID" : userID, "likesSong" : reaction}
-            console.log("inside song reaction section...")
+            gk.addReaction(clientData.likesSong)
         }
     });
 })
