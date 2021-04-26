@@ -49,14 +49,11 @@ wsServer.on('connection', socket => {
         //this comes from display
         if (clientData.hasOwnProperty("Access_Token") && clientData.hasOwnProperty("Refresh_Token")) {
 
-            console.log(clientData)
             displayClientSocket = clientData.UserId
             const accessToken = clientData.Access_Token
             const refreshToken = clientData.Refresh_Token
             spotify.setTokens(accessToken, refreshToken)
             notifier.emit("get-current-playback")
-            //albumCover, trackName, artistName, qLength, qCost
-            updateDisplay(spotify.albumCover, spotify.songTitle, spotify.artistName, gk.getQLength(), gk.getCost())
         }
 
         //determine if message is song request or song reaction

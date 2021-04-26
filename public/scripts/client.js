@@ -28,7 +28,7 @@ class SpotifyClient {
         this.artistName = "";
 
         if (this.isPlaying) {
-            this.callSpotifyApi("GET", this.PLAYBACKSTATE + "?market=US", null, this.handleCurrentlyPlayingResponse);
+            this.callSpotifyApi("GET", this.PLAYBACKSTATE + "?market=US", null, handleCurrentlyPlayingResponse);
         }
     }
 
@@ -114,37 +114,10 @@ class SpotifyClient {
     }
 
     /**
-     * Parses JSON response from Spotify and verifies current player state
-     */
-    handleCurrentlyPlayingResponse() {
-        if (this.status === 200) {
-            let data = JSON.parse(this.responseText);
-            console.log(data);
-            if (data.item !== null) {
-                //send this info to display
-                this.albumCover = data.item.album.images[0].url
-                this.songTitle = data.item.name
-                this.artistName = data.item.artists[0].name
-                notifier.emit("song-update", this.albumCover, this.songTitle, this.artistName)
-
-                this.songDuration = data.item.duration_ms
-                this.songProgression = data.progress_ms
-                this.checkSongDuration();
-            }
-
-        } else if (this.status === 401) {
-            refreshAccessToken();
-
-        } else {
-            console.log(this.responseText);
-        }
-    }
-
-    /**
      * Plays if playback state is paused, otherwise pauses playback state
      */
     playPause() {
-        this.callSpotifyApi("GET", this.PLAYBACKSTATE + "?market=US", null, this.handleCurrentlyPlayingResponse);
+        this.callSpotifyApi("GET", this.PLAYBACKSTATE + "?market=US", null, handleCurrentlyPlayingResponse);
         if (this.isPlaying) {
             this.callSpotifyApi("PUT", this.PAUSE, null, this.verifyRequestHandled());
             this.isPlaying = false;
@@ -160,41 +133,16 @@ class SpotifyClient {
     skipSong() {
         clearInterval(this.songTimer);
         this.callSpotifyApi("POST", this.SKIP, null, this.verifyRequestHandled)
-        this.callSpotifyApi("GET", this.PLAYBACKSTATE + "?market=US", null, this.handleCurrentlyPlayingResponse)
+        this.callSpotifyApi("GET", this.PLAYBACKSTATE + "?market=US", null, handleCurrentlyPlayingResponse)
     }
 
-    /**
-     * Sets the song duration and resets timer
-     */
-    checkSongDuration() {
-        let songEnd = new Date().getTime() + (this.songDuration - this.songProgression)
-        this.songTimer = setInterval(function () {
-            let now = new Date().getTime();
-            let remainingTime = songEnd - now;
-
-            // Time calculations for days, hours, minutes and seconds
-            var days = Math.floor(remainingTime / (1000 * 60 * 60 * 24));
-            var hours = Math.floor((remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            var minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));
-            var seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
-
-            // Display the result
-            console.log(days + "d " + hours + "h " + minutes + "m " + seconds + "s ");
-
-            if (remainingTime < 0) {
-                clearInterval(this.songTimer);
-                console.log("Song ended")
-                this.callSpotifyApi("GET", this.PLAYBACKSTATE + "?market=US", null, this.handleCurrentlyPlayingResponse);
-            }
-        }, 1000);
-    }
 }
 
 notifier.on("get-current-playback", () => {
-    instance.callSpotifyApi("GET", instance.PLAYBACKSTATE + "?market=US", null, instance.handleCurrentlyPlayingResponse);
+    instance.callSpotifyApi("GET", instance.PLAYBACKSTATE + "?market=US", null, handleCurrentlyPlayingResponse);
 })
 
-const instance = new SpotifyClient();
+let instance = new SpotifyClient();
 
 /**
  * Refreshes access token
@@ -216,6 +164,59 @@ function handleSongAddition() {
 
     } else if (this.status === 404) {
         console.log("Device not found");
+
+    } else if (this.status === 401) {
+        refreshAccessToken();
+
+    } else {
+        console.log(this.responseText);
+    }
+}
+
+
+/**
+ * Sets the song duration and resets timer
+ */
+function checkSongDuration() {
+    let songEnd = new Date().getTime() + (instance.songDuration - instance.songProgression)
+    instance.songTimer = setInterval(function () {
+        let now = new Date().getTime();
+        let remainingTime = songEnd - now;
+
+        // Time calculations for days, hours, minutes and seconds
+        var days = Math.floor(remainingTime / (1000 * 60 * 60 * 24));
+        var hours = Math.floor((remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
+
+        // Display the result
+        // console.log(days + "d " + hours + "h " + minutes + "m " + seconds + "s ");
+
+        if (remainingTime < 0) {
+            clearInterval(instance.songTimer);
+            console.log("Song ended")
+            instance.callSpotifyApi("GET", instance.PLAYBACKSTATE + "?market=US", null, handleCurrentlyPlayingResponse);
+        }
+    }, 1000);
+}
+
+/**
+ * Parses JSON response from Spotify and verifies current player state
+ */
+function handleCurrentlyPlayingResponse() {
+    if (this.status === 200) {
+        let data = JSON.parse(this.responseText);
+        if (data.item !== null) {
+            //send this info to display
+            instance.albumCover = data.item.album.images[0].url
+            instance.songTitle = data.item.name
+            instance.artistName = data.item.artists[0].name
+            notifier.emit("song-update", instance.albumCover, instance.songTitle, instance.artistName)
+
+            instance.songDuration = data.item.duration_ms
+            instance.songProgression = data.progress_ms
+            checkSongDuration();
+        }
 
     } else if (this.status === 401) {
         refreshAccessToken();
