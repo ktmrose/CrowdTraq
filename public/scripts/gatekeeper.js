@@ -6,6 +6,12 @@ class GateKeeper {
         this.q = []
         this.users = []
         this.costModifier = 0;
+
+        this.currentSongLikes = 0;
+        this.currentSongDislikes = 0;
+        this.currentSongUser = "";
+
+        //TODO: add array with song cooldown timer
     }
 
     getQLength() {
@@ -32,6 +38,7 @@ class GateKeeper {
         if (this.users.length === 0) {
             this.addUser(userId)
             console.log("User array after addition: " + this.users)
+            return userId
         }
         for (let i = 0; i < this.users.length; i++) {
             if (this.users[i] === userId) {
@@ -40,11 +47,13 @@ class GateKeeper {
         }
         console.log("Unidentified user: user not found in array")
         this.addUser(userId)
+        return userId
     }
 
     addUser(userID){
 
         this.users.push(userID);
+        console.log("User " + userID + " added")
     }
 
     /**
@@ -64,12 +73,16 @@ class GateKeeper {
             console.log("too few tokens to add to q")
             return userTokens;
         } else {
+            for (const song of this.q) {
+                if (song.trackId === trackID) {
+                    console.log("Song already in q")
+                    return userTokens
+                }
+            }
             let newSong =
                 {
                     trackId: trackID,
                     requestingUser: userId,
-                    numLikes: 0,
-                    numDislikes: 0
                 }
             this.q.push(newSong)
             spotify.pushSongToQ(trackID)
@@ -78,6 +91,17 @@ class GateKeeper {
         }
     }
 }
-
 const instance = new GateKeeper();
+notifier.on("gk-song-update", (trackID) => {
+    if ( instance.q[0] !== undefined && instance.q[0].trackId === trackID) {
+        const removedSong = instance.q.shift()
+        notifier.emit("q-update")
+        instance.currentSongUser = removedSong.requestingUser
+        console.log("Song Id " + removedSong.trackId + " dequeued")
+    } else {
+        instance.currentSongUser = ""
+    }
+    instance.currentSongLikes = 0;
+    instance.currentSongDislikes = 0;
+})
 module.exports =  instance;

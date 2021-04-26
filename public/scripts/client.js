@@ -26,10 +26,6 @@ class SpotifyClient {
         this.albumCover = "";
         this.songTitle = "";
         this.artistName = "";
-
-        if (this.isPlaying) {
-            this.callSpotifyApi("GET", this.PLAYBACKSTATE + "?market=US", null, handleCurrentlyPlayingResponse);
-        }
     }
 
     setTokens(accessToken, refreshToken) {
@@ -190,7 +186,7 @@ function checkSongDuration() {
         var seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
 
         // Display the result
-        // console.log(days + "d " + hours + "h " + minutes + "m " + seconds + "s ");
+        console.log(days + "d " + hours + "h " + minutes + "m " + seconds + "s ");
 
         if (remainingTime < 0) {
             clearInterval(instance.songTimer);
@@ -212,6 +208,7 @@ function handleCurrentlyPlayingResponse() {
             instance.songTitle = data.item.name
             instance.artistName = data.item.artists[0].name
             notifier.emit("song-update", instance.albumCover, instance.songTitle, instance.artistName)
+            notifier.emit("gk-song-update", data.item.id)
 
             instance.songDuration = data.item.duration_ms
             instance.songProgression = data.progress_ms

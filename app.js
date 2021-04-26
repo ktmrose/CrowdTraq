@@ -76,6 +76,10 @@ notifier.on("song-update", (albumCover, songTitle, artistName) => {
     updateDisplay(albumCover, songTitle, artistName, gk.getQLength(), gk.getCost())
 })
 
+notifier.on("q-update", () => {
+    updateDisplay(spotify.albumCover, spotify.songTitle, spotify.artistName, gk.getQLength(), gk.getCost())
+})
+
 // start express server on port 8081
 const server = app.listen(8081, () => {
     console.log("server started on port 8081");
