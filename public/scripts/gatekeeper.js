@@ -90,6 +90,14 @@ class GateKeeper {
             return userTokens-cost;
         }
     }
+
+    addReaction(likesSong) {
+        if (likesSong) {
+            this.currentSongLikes ++
+        } else {
+            this.currentSongDislikes ++
+        }
+    }
 }
 const instance = new GateKeeper();
 notifier.on("gk-song-update", (trackID) => {
@@ -103,5 +111,6 @@ notifier.on("gk-song-update", (trackID) => {
     }
     instance.currentSongLikes = 0;
     instance.currentSongDislikes = 0;
+    notifier.emit("reset-reactions")
 })
 module.exports =  instance;

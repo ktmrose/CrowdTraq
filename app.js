@@ -80,6 +80,18 @@ notifier.on("q-update", () => {
     updateDisplay(spotify.albumCover, spotify.songTitle, spotify.artistName, gk.getQLength(), gk.getCost())
 })
 
+notifier.on("reset-reactions", () => {
+    //sends message to all clients
+    wsServer.broadcast(JSON.stringify({"Push_State": 0})) //push state == 0; reset reactions
+})
+
+wsServer.broadcast = function (message) {
+    console.log(message)
+    for (const client of webSockets) {
+        client.send(message)
+    }
+}
+
 // start express server on port 8081
 const server = app.listen(8081, () => {
     console.log("server started on port 8081");
