@@ -150,7 +150,6 @@ function refreshAccessToken() {
     instance.callAuthorizationApi(body);
 }
 
-
 /**
  * Callback verifying song addition.
  */

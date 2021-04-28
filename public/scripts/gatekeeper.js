@@ -99,6 +99,7 @@ class GateKeeper {
             this.currentSongDislikes ++
         }
         console.log("NumLikes: " + this.currentSongLikes + " NumDislikes: " + this.currentSongDislikes)
+        checkReactions()
     }
 
 }
@@ -122,6 +123,14 @@ notifier.on("gk-song-update", (trackID) => {
  * For every five songs in Q, costModifier value doubles starting at 2.
  */
 function adjustCostMod() {
-    instance.costModifier = Math.floor(instance.q.length / 5)*2
+    instance.costModifier = Math.ceil(instance.q.length / 5)*2
+}
+
+function checkReactions() {
+    if (instance.currentSongLikes > (2*instance.users.length)/3 ) {
+        notifier.emit("fire")
+    } else if (instance.currentSongDislikes > (2*instance.users.length)/3) {
+        notifier.emit("not")
+    }
 }
 module.exports =  instance;
