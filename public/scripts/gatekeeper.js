@@ -87,6 +87,7 @@ class GateKeeper {
             this.q.push(newSong)
             spotify.pushSongToQ(trackID)
             console.log(this.q)
+            adjustCostMod()
             return userTokens-cost;
         }
     }
@@ -99,11 +100,13 @@ class GateKeeper {
         }
         console.log("NumLikes: " + this.currentSongLikes + " NumDislikes: " + this.currentSongDislikes)
     }
+
 }
 const instance = new GateKeeper();
 notifier.on("gk-song-update", (trackID) => {
     if ( instance.q[0] !== undefined && instance.q[0].trackId === trackID) {
         const removedSong = instance.q.shift()
+        adjustCostMod()
         notifier.emit("q-update")
         instance.currentSongUser = removedSong.requestingUser
         console.log("Song Id " + removedSong.trackId + " dequeued")
@@ -114,4 +117,11 @@ notifier.on("gk-song-update", (trackID) => {
     instance.currentSongDislikes = 0;
     notifier.emit("reset-reactions")
 })
+
+/**
+ * For every five songs in Q, costModifier value doubles starting at 2.
+ */
+function adjustCostMod() {
+    instance.costModifier = Math.floor(instance.q.length / 5)*2
+}
 module.exports =  instance;

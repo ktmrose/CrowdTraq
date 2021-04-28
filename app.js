@@ -85,8 +85,8 @@ notifier.on("reset-reactions", () => {
 
 wsServer.broadcast = function (message) {
     console.log(message)
-    for (const client of webSockets) {
-        client.send(message)
+    for (let i = 0; i < webSockets.length; i++) {
+        webSockets[i].send(message)
     }
 }
 
