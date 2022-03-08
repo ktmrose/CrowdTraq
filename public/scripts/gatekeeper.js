@@ -10,6 +10,7 @@ class GateKeeper {
         this.currentSongLikes = 0;
         this.currentSongDislikes = 0;
         this.currentSongUser = "";
+        this.currentSongId = "";
 
         //TODO: add array with song cooldown timer
     }
@@ -51,7 +52,6 @@ class GateKeeper {
     }
 
     addUser(userID){
-
         this.users.push(userID);
         console.log("User " + userID + " added")
     }
@@ -75,7 +75,8 @@ class GateKeeper {
         } else {
             for (const song of this.q) {
                 if (song.trackId === trackID) {
-                    console.log("Song already in q")
+
+                    notifier.emit("error", userId, 1) //duplicate song error
                     return userTokens
                 }
             }
@@ -88,6 +89,7 @@ class GateKeeper {
             spotify.pushSongToQ(trackID)
             console.log(this.q)
             adjustCostMod()
+            console.log("user tokens: " + userTokens + "cost: " + cost)
             return userTokens-cost;
         }
     }
@@ -106,6 +108,7 @@ class GateKeeper {
 const instance = new GateKeeper();
 notifier.on("gk-song-update", (trackID) => {
     if ( instance.q[0] !== undefined && instance.q[0].trackId === trackID) {
+        instance.currentSongId
         const removedSong = instance.q.shift()
         adjustCostMod()
         notifier.emit("q-update")
@@ -127,10 +130,14 @@ function adjustCostMod() {
 }
 
 function checkReactions() {
-    if (instance.currentSongLikes > (2*instance.users.length)/3 ) {
-        notifier.emit("fire")
-    } else if (instance.currentSongDislikes > (2*instance.users.length)/3) {
-        notifier.emit("not")
+
+    console.log("active users: " + instance.users.length)
+    if (instance.currentSongUser !== undefined) {
+        if (instance.currentSongLikes > (2*instance.users.length)/3 ) {
+            notifier.emit("fire", instance.currentSongUser)
+        } else if (instance.currentSongDislikes > (2*instance.users.length)/3) {
+            notifier.emit("not", instance.currentSongUser)
+        }
     }
 }
 module.exports =  instance;

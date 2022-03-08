@@ -83,6 +83,21 @@ notifier.on("reset-reactions", () => {
     wsServer.broadcast(JSON.stringify({"Push_State": 0})) //push state == 0; reset reactions
 })
 
+notifier.on("hot", (userId) => {
+    console.log("This song was hot!" + userId)
+    webSockets[userId].send(JSON.stringify({"Push_State": 1}))
+})
+
+/**
+ * Error codes:
+ * 0 - not enough tokens to add to queue
+ * 1 - song already in queue
+ */
+notifier.on("error", (userId, code) => {
+    console.log("Error " + code + ": Song already in q")
+    webSockets[userId].send(JSON.stringify({"Error": code}))
+})
+
 wsServer.broadcast = function (message) {
     console.log(message)
     for (let i = 0; i < webSockets.length; i++) {
